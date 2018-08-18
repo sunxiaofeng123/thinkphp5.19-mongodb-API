@@ -12,13 +12,12 @@ use app\index\model\MongoBase;
 
 class UserChat extends MongoBase
 {
-    public    $table    = "";
-    protected $endModel = '_record';
+    public  $table = "";
 
     public function __construct($table = '', $database = '', array $data = [])
     {
         if (!empty($table)) {
-            $this->table = $table.$this->endModel;
+            $this->table = $table;
         }
 
         parent::__construct($database, $data);
@@ -26,14 +25,13 @@ class UserChat extends MongoBase
 
     /*
      * 插入聊天记录
-     * @param string $toId;
-     * @param  string $tableName;
+     * @param array $data;
      * @return $blnsucc;
      */
 
-    public function addUserRecord($toId, $tableName)
+    public function addUserRecord(array $data)
     {
-        return $this->save(['toId' => $toId, 'tableName' => $tableName]);
+        return $this->save($data);
     }
 
     /*
@@ -46,9 +44,10 @@ class UserChat extends MongoBase
     {
         $table = '';
 
-        $data = $this->where('toId', $toId)->find();
+        $data = $this->where('toId', $toId)->value('tableName');
+
         if (!empty($data)) {
-            $table = $data['tableName'];
+            $table = $data;
         }
 
         return $table;

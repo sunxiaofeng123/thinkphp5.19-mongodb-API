@@ -34,9 +34,9 @@ class UserMessage extends Base
     }
 
     //记录模型
-    protected function chatModel($userID): object
+    protected function chatModel($userId): object
     {
-        return new UserChat($userID, $this->_database);
+        return new UserChat($userId, $this->_database);
 
     }
 
@@ -57,12 +57,16 @@ class UserMessage extends Base
     {
         $table = $this->getChatTable();
         if (empty($table)) { //如果table为空没有记录，则没有基础数据
+            //添加初始化记录
+            $this->addChatRecord($this->_sendUserId, ['toId' => $this->_receiveUserId, 'tableName' => $this->_sendUserId.'_'.$this->_receiveUserId]);
+            $this->addChatRecord($this->_receiveUserId, ['toId' => $this->_sendUserId, 'tableName' => $this->_sendUserId.'_'.$this->_receiveUserId]);
+
             return json(['message' => array()])->code('200');
         }
 
         //查询聊天基础信息
         $messageData = $this->chatMessageModel($table)->getChatMessage();
-
+        var_dump($messageData);die;
         return json(['message' => $messageData])->code('200');
     }
 
@@ -80,14 +84,38 @@ class UserMessage extends Base
 
     //添加聊天信息
     public function addChatMessage()
-    {
+    {   $bln = false;
 
+        $content = $this->request->param('content');
+        if (empty($content)) {
+            return json(['error' => '发送的消息不能为空'])->code('301');
+        }
+
+        $messageData = [
+                'sendUserId'    => $this->_sendUserId,
+                'receiveUserId' => $this->_receiveUserId,
+                'posttime'      => time(),
+                'content'       => $content,
+            ];
+
+        //获取表名称
+        $table = $this->getChatTable();
+        if (!empty($table)) {
+            //添加发送消息
+            $bln = $this->chatMessageModel($table)->addChatMessage($messageData);
+        }
+
+        if ($bln !== false) {
+            return json(['success' => $bln])->code('200');
+        } else {
+            return json(['error' => $bln])->code('200');
+        }
     }
 
     //添加聊天记录，初始化只添加一次
-    protected function addChatRecord()
+    protected function addChatRecord($userId, $data)
     {
-
+        return $this->chatModel($userId)->addUserRecord($data);
     }
 
 }

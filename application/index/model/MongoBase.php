@@ -29,6 +29,8 @@ class MongoBase extends Model
         'hostport'       => '27017',
         // 是否_id转换为id
         'pk_convert_id'   => true,
+        //因为查出的数据在转换模型对象时，会被过滤掉，所以出此下册，兼容一下，返回的数据就是数组类型，不是能使用toArray()。
+        'is_mongo_model'  => true,
     ];
 
     public function __construct($database = '', $data = [])

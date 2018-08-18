@@ -39,7 +39,8 @@ class MongoTest extends Base
 
     public function test()
     {
-        
+        $data = $this->mongodb->where('id', '5b70e4e0b427e500130c12f4')->find();
+        dump($data);die;
     }
 
 }

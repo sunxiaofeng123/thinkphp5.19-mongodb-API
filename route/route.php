@@ -16,4 +16,10 @@ Route::get('think', function () {
 Route::post('mongotest', 'mongoTest/test');
 Route::get('addChats/:id', 'mongoTest/addChats');
 
+//初始化进入聊天页面
+Route::post('getBasicsMessage', 'userMessage/getBasicsMessage');
+
+//发送聊天信息
+Route::post('addChatMessage', 'userMessage/addChatMessage');
+
 

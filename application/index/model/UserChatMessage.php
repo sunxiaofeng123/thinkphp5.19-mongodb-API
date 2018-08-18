@@ -9,17 +9,16 @@
 
 namespace app\index\model;
 use app\index\model\MongoBase;
-
+use think\Db;
 
 class UserChatMessage extends MongoBase
 {
     public $table       = "";
-    protected $modelEnd = "_chat";
 
     public function __construct($table = '', $database = '', array $data = [])
     {
         if (!empty($table)) {
-            $this->table = $table.$this->modelEnd;
+            $this->table = $table;
         }
 
         parent::__construct($database, $data);
@@ -34,7 +33,7 @@ class UserChatMessage extends MongoBase
      * @return $blnsucc
      */
 
-    public function addCharMessage($messageData)
+    public function addChatMessage($messageData)
     {
         return $this->save($messageData);
     }
