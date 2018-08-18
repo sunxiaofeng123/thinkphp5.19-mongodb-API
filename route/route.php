@@ -22,4 +22,7 @@ Route::post('getBasicsMessage', 'userMessage/getBasicsMessage');
 //发送聊天信息
 Route::post('addChatMessage', 'userMessage/addChatMessage');
 
+//查询回复消息
+Route::post('getReplyMessage', 'userMessage/getReplyMessage');
+
 

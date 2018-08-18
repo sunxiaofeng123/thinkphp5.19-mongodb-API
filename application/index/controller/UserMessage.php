@@ -66,14 +66,17 @@ class UserMessage extends Base
 
         //查询聊天基础信息
         $messageData = $this->chatMessageModel($table)->getChatMessage();
-        var_dump($messageData);die;
         return json(['message' => $messageData])->code('200');
     }
 
     //查询回复消息
     public function getReplyMessage()
     {
-
+        //获取表名
+        $table = $this->getChatTable();
+        
+        $message = $this->chatMessageModel($table)->getReplyMessage($this->_receiveUserId);
+        return json(['message' => $message])->code('200');
     }
 
     //查询列表信息
