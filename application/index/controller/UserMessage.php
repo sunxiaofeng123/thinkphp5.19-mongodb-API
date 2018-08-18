@@ -19,7 +19,6 @@ class UserMessage extends Base
     protected $_sendUserId    = ""; //发送人userID
     protected $_receiveUserId = ""; //接收人userId
     protected $_database;           //数据库名称（根据不同的项目设置不同的数据库）
-    protected $_userChatModel = ""; //聊天记录模型
 
     public function __construct()
     {
@@ -35,13 +34,10 @@ class UserMessage extends Base
     }
 
     //记录模型
-    protected function chatModel(): object
+    protected function chatModel($userID): object
     {
-        if(empty($this->_userChatModel)) {
-            $this->_userChatModel = new UserChat($this->_sendUserId, $this->_database);
-        }
+        return new UserChat($userID, $this->_database);
 
-        return $this->_userChatModel;
     }
 
     //聊天模型
@@ -53,7 +49,7 @@ class UserMessage extends Base
     //获取记录聊天表名
     protected function getChatTable()
     {
-        return $this->chatModel()->checkRecord($this->_receiveUserId);
+        return $this->chatModel($this->_sendUserId)->checkRecord($this->_receiveUserId);
     }
 
     //进入页面查询基础信息
@@ -91,7 +87,7 @@ class UserMessage extends Base
     //添加聊天记录，初始化只添加一次
     protected function addChatRecord()
     {
-        
+
     }
 
 }
