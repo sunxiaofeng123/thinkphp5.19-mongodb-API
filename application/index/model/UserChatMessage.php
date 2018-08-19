@@ -57,18 +57,47 @@ class UserChatMessage extends MongoBase
      public function getReplyMessage($sendUserId)
      {
         return $this->where('sendUserId', $sendUserId)
+                    ->where('isread', 1)
                     ->order('posttime asc')
                     ->select();
      }
 
      /*
+      * 修改未读消息的状态
       * @param string $receiveUserId 回复人消息Id
-      * @param string $table  消息表名称
       * @return boolean $blnsucc
       */
 
-     public function updReadStatus()
+     public function updReadStatus($receiveUserId)
      {
+         $unreadMessage = $this->getUnreadMessage($receiveUserId);
 
+         if (empty($unreadMessage)) {
+             return true;
+         }
+
+         $statusAll = array();
+         foreach($unreadMessage as $key => $val){
+             $status = array();
+
+             $status['id']     = $val['id'];
+             $status['isread'] = 2;
+
+             $statusAll[] = $status;
+         }
+
+         $blnsucc = $this->saveAll($statusAll);
+         var_dump($blnsucc);die;
+     }
+     /*
+      * 获取未读消息
+      * @param string $receiveUserId 回复消息ID
+      * @return array $unreadMessage
+      */
+     protected function getUnreadMessage($receiveUserId)
+     {
+         return $this->where('sendUserId', $receiveUserId)
+                     ->where('isread', 1)
+                     ->select();
      }
 }

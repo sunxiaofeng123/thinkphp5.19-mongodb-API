@@ -126,7 +126,7 @@ class UserMessage extends Base
     //修改未读信息为已读
     protected function updateReadStatus($receiveUserId, $table)
     {
-        
+        return $this->chatMessageModel($table)->updReadStatus($receiveUserId);
     }
 
 }
