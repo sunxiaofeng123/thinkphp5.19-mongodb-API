@@ -37,7 +37,6 @@ class UserMessage extends Base
     protected function chatModel($userId): object
     {
         return new UserChat($userId, $this->_database);
-
     }
 
     //聊天模型
@@ -66,6 +65,8 @@ class UserMessage extends Base
 
         //查询聊天基础信息
         $messageData = $this->chatMessageModel($table)->getChatMessage();
+        //如果消息不为空修改修改未读消息为已读
+
         return json(['message' => $messageData])->code('200');
     }
 
@@ -74,7 +75,7 @@ class UserMessage extends Base
     {
         //获取表名
         $table = $this->getChatTable();
-        
+
         $message = $this->chatMessageModel($table)->getReplyMessage($this->_receiveUserId);
         return json(['message' => $message])->code('200');
     }
@@ -98,6 +99,7 @@ class UserMessage extends Base
                 'sendUserId'    => $this->_sendUserId,
                 'receiveUserId' => $this->_receiveUserId,
                 'posttime'      => time(),
+                'isread'        => 1,       //消息读取状态，1是未读，2是已读
                 'content'       => $content,
             ];
 
@@ -119,6 +121,12 @@ class UserMessage extends Base
     protected function addChatRecord($userId, $data)
     {
         return $this->chatModel($userId)->addUserRecord($data);
+    }
+
+    //修改未读信息为已读
+    protected function updateReadStatus($receiveUserId, $table)
+    {
+        
     }
 
 }

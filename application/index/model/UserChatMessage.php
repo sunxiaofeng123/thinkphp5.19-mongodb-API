@@ -57,8 +57,18 @@ class UserChatMessage extends MongoBase
      public function getReplyMessage($sendUserId)
      {
         return $this->where('sendUserId', $sendUserId)
-                    ->order('posttime desc')
-                    ->limit('4')
+                    ->order('posttime asc')
                     ->select();
+     }
+
+     /*
+      * @param string $receiveUserId 回复人消息Id
+      * @param string $table  消息表名称
+      * @return boolean $blnsucc
+      */
+
+     public function updReadStatus()
+     {
+
      }
 }
