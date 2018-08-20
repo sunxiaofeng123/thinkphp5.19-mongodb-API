@@ -9,12 +9,12 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-Route::get('think', function () {
+Route::get('/', function () {
     return 'hello,ThinkPHP5!';
 });
 
-Route::post('mongotest', 'mongoTest/test');
-Route::get('addChats/:id', 'mongoTest/addChats');
+//信息列表
+Route::post('getMessageList', 'userMessage/getMessageList');
 
 //初始化进入聊天页面
 Route::post('getBasicsMessage', 'userMessage/getBasicsMessage');

@@ -7,5 +7,5 @@
  每个接口必须传入的参数，所有请求使用post。
  + 初始化聊天页面使用接口：域名／getBasicsMessage
  + 添加发送消息接口：域名／addChatMessage，参数：除必备参数外：消息内容：content
- 剩余还在开发中。。。。敬请期待！
- 
+ + 列表信息接口：域名／getMessageList
+ + 查询回复信息接口：域名／getReplyMessage

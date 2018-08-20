@@ -57,19 +57,20 @@ class UserChatMessage extends MongoBase
      public function getReplyMessage($sendUserId)
      {
         return $this->where('sendUserId', $sendUserId)
-                    ->where('isread', 1)
+                    ->where('isread', '1')
                     ->order('posttime asc')
                     ->select();
      }
 
      /*
       * 修改未读消息的状态
-      * @param string $unreadMessage 回复人消息
+      * @param string $receiveUserId 回复人消息id
       * @return boolean $blnsucc
       */
 
-     public function updReadStatus($unreadMessage)
+     public function updReadStatus($receiveUserId)
      {
+         $unreadMessage = $this->getUnreadMessage($receiveUserId);
          if (empty($unreadMessage)) {
              return true;
          }
@@ -89,7 +90,7 @@ class UserChatMessage extends MongoBase
      protected function getUnreadMessage($receiveUserId)
      {
          return $this->where('sendUserId', $receiveUserId)
-                     ->where('isread', 1)
+                     ->where('isread', '1')
                      ->select();
      }
 }
