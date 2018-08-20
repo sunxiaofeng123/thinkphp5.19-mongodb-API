@@ -52,4 +52,14 @@ class UserChat extends MongoBase
 
         return $table;
     }
+
+    /*
+     * 查询列表信息
+     * @return array $list
+     */
+
+    public function getMessageList()
+    {
+        return $this->order('id asc')->select();
+    }
 }

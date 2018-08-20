@@ -66,6 +66,10 @@ class UserMessage extends Base
         //查询聊天基础信息
         $messageData = $this->chatMessageModel($table)->getChatMessage();
         //如果消息不为空修改修改未读消息为已读
+        if (!empty($messageData)) {
+            //修改未读消息，为已读。
+            $this->updateReadStatus($messageData, $table);
+        }
 
         return json(['message' => $messageData])->code('200');
     }
@@ -77,13 +81,20 @@ class UserMessage extends Base
         $table = $this->getChatTable();
 
         $message = $this->chatMessageModel($table)->getReplyMessage($this->_receiveUserId);
+        if (!empty($message)) {
+            //修改未读消息，为已读。
+            $this->updateReadStatus($message, $table);
+        }
+
         return json(['message' => $message])->code('200');
     }
 
     //查询列表信息
     public function getMessageList()
     {
+        $messageList = $this->chatModel($this->_sendUserId)->getMessageList();
 
+        return json(['messageList' => $messageList])->code('200');
     }
 
     //添加聊天信息
@@ -124,9 +135,9 @@ class UserMessage extends Base
     }
 
     //修改未读信息为已读
-    protected function updateReadStatus($receiveUserId, $table)
+    protected function updateReadStatus($unreadMessage,$table)
     {
-        return $this->chatMessageModel($table)->updReadStatus($receiveUserId);
+        return $this->chatMessageModel($table)->updReadStatus($unreadMessage);
     }
 
 }

@@ -13,7 +13,7 @@ use think\Db;
 
 class UserChatMessage extends MongoBase
 {
-    public $table       = "";
+    public $table = "";
 
     public function __construct($table = '', $database = '', array $data = [])
     {
@@ -64,30 +64,22 @@ class UserChatMessage extends MongoBase
 
      /*
       * 修改未读消息的状态
-      * @param string $receiveUserId 回复人消息Id
+      * @param string $unreadMessage 回复人消息
       * @return boolean $blnsucc
       */
 
-     public function updReadStatus($receiveUserId)
+     public function updReadStatus($unreadMessage)
      {
-         $unreadMessage = $this->getUnreadMessage($receiveUserId);
-
          if (empty($unreadMessage)) {
              return true;
          }
 
-         $statusAll = array();
+         $result = array();
          foreach($unreadMessage as $key => $val){
-             $status = array();
-
-             $status['id']     = $val['id'];
-             $status['isread'] = 2;
-
-             $statusAll[] = $status;
+             $result[$key] = $this->where(['id' => $val['id']])->update(['isread' => '2']);
          }
 
-         $blnsucc = $this->saveAll($statusAll);
-         var_dump($blnsucc);die;
+         return $result;
      }
      /*
       * 获取未读消息
