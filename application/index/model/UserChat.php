@@ -8,7 +8,9 @@
  */
 
 namespace app\index\model;
+
 use app\index\model\MongoBase;
+use app\index\model\UserChatMessage;
 
 class UserChat extends MongoBase
 {
@@ -60,6 +62,23 @@ class UserChat extends MongoBase
 
     public function getMessageList()
     {
-        return $this->order('id asc')->select();
+        $list = $this->order('id asc')->select();
+
+        $messageList = array();
+        if (!empty($list)){
+            $message =  array_map(function($value){
+                $message = array();
+                $userChatMessage = new UserChatMessage($value['tableName'], $this->connection['database']);
+
+                $message['userId']      = $value['toId'];
+                $message['unreadCount'] = $userChatMessage->getMessageCountForUserId($value['toId']);
+
+                return $message;
+            },$list);
+
+            $messageList[] = $message;
+        }
+
+        return $messageList;
     }
 }

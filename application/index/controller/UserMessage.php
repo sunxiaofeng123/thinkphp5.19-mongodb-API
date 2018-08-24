@@ -7,11 +7,11 @@
  */
 
 namespace app\index\controller;
+
 use app\index\controller\Base;
 use app\index\model\UserChatMessage;
 use app\index\model\UserChat;
 use think\App;
-
 
 class UserMessage extends Base
 {
@@ -55,10 +55,12 @@ class UserMessage extends Base
     public function getBasicsMessage()
     {
         $table = $this->getChatTable();
-        if (empty($table)) { //如果table为空没有记录，则没有基础数据
+        if (empty($table)) {//如果table为空没有记录，则没有基础数据
+
+            $tableName = $this->_sendUserId.'_'.$this->_receiveUserId;
             //添加初始化记录
-            $this->addChatRecord($this->_sendUserId, ['toId' => $this->_receiveUserId, 'tableName' => $this->_sendUserId.'_'.$this->_receiveUserId]);
-            $this->addChatRecord($this->_receiveUserId, ['toId' => $this->_sendUserId, 'tableName' => $this->_sendUserId.'_'.$this->_receiveUserId]);
+            $this->addChatRecord($this->_sendUserId, ['toId' => $this->_receiveUserId, 'tableName' => $tableName]);
+            $this->addChatRecord($this->_receiveUserId, ['toId' => $this->_sendUserId, 'tableName' => $tableName]);
 
             return json(['message' => array()])->code('200');
         }
@@ -110,8 +112,8 @@ class UserMessage extends Base
                 'sendUserId'    => $this->_sendUserId,
                 'receiveUserId' => $this->_receiveUserId,
                 'posttime'      => time(),
-                'isread'        => '1',       //消息读取状态，1是未读，2是已读
-                'content'       => $content,
+                'isread'        => '1',  //消息读取状态，1是未读，2是已读
+                'content'       => htmlspecialchars(addslashes($content)),
             ];
 
         //获取表名称

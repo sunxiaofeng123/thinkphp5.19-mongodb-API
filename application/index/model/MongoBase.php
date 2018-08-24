@@ -7,8 +7,8 @@
  */
 
 namespace app\index\model;
-use think\Model;
 
+use think\Model;
 
 class MongoBase extends Model
 {

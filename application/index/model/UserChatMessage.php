@@ -8,6 +8,7 @@
  */
 
 namespace app\index\model;
+
 use app\index\model\MongoBase;
 use think\Db;
 
@@ -92,5 +93,17 @@ class UserChatMessage extends MongoBase
          return $this->where('sendUserId', $receiveUserId)
                      ->where('isread', '1')
                      ->select();
+     }
+
+     /*
+      * 获取未读消息记录条数
+      * @param string $receiveUserId
+      * @return string $count
+      */
+     public function getMessageCountForUserId($receiveUserId)
+     {
+         return $this->where('sendUserId', $receiveUserId)
+                     ->where('isread', '1')
+                     ->count();
      }
 }
