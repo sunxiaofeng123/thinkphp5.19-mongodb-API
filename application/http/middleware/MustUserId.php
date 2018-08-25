@@ -17,8 +17,12 @@ class MustUserId
             return json(['error' => '数据库参数不能空'])->code(403);
         }
 
-        if (!isset($request->sendUserId) || !isset($request->receiveUserId) || empty($request->sendUserId) || empty($request->receiveUserId)) {
-            return json(['error' => '发送人和接收人ID不能为空'])->code(403);
+        if (!isset($request->sendUserId) || empty($request->sendUserId)) {
+            return json(['error' => '发送人ID不能为空'])->code(403);
+        }
+
+        if (!isset($request->receiveUserId) || empty($request->receiveUserId)) {
+            return json(['error' => '接受人ID不能为空'])->code(403);
         }
 
         return $next($request);
