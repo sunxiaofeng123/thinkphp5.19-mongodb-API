@@ -15,10 +15,10 @@ use think\App;
 
 class UserMessage extends Base
 {
-    protected $middleware     = ['MustUserId'];  //中间件
-    protected $_sendUserId    = ""; //发送人userID
-    protected $_receiveUserId = ""; //接收人userId
-    protected $_database;           //数据库名称（根据不同的项目设置不同的数据库）
+//    protected $middleware     = ['MustUserId'];  //中间件
+    protected $sendUserId    = ""; //发送人userID
+    protected $receiveUserId = ""; //接收人userId
+    protected $database;           //数据库名称（根据不同的项目设置不同的数据库）
 
     public function __construct()
     {
@@ -28,27 +28,27 @@ class UserMessage extends Base
         $receiveUserId = $this->request->param('receiveUserId');
         $database      = $this->request->param('database');
 
-        $this->_sendUserId    = $sendUserId;
-        $this->_receiveUserId = $receiveUserId;
-        $this->_database      = $database;
+        $this->sendUserId    = $sendUserId;
+        $this->receiveUserId = $receiveUserId;
+        $this->database      = $database;
     }
 
     //记录模型
     protected function chatModel($userId): object
     {
-        return new UserChat($userId, $this->_database);
+        return new UserChat($userId, $this->database);
     }
 
     //聊天模型
     protected function chatMessageModel($table): object
     {
-        return new UserChatMessage($table, $this->_database);
+        return new UserChatMessage($table, $this->database);
     }
 
     //获取记录聊天表名
     protected function getChatTable()
     {
-        return $this->chatModel($this->_sendUserId)->checkRecord($this->_receiveUserId);
+        return $this->chatModel($this->sendUserId)->checkRecord($this->receiveUserId);
     }
 
     //进入页面查询基础信息
@@ -57,10 +57,10 @@ class UserMessage extends Base
         $table = $this->getChatTable();
         if (empty($table)) {//如果table为空没有记录，则没有基础数据
 
-            $tableName = $this->_sendUserId.'_'.$this->_receiveUserId;
+            $tableName = $this->sendUserId.'_'.$this->receiveUserId;
             //添加初始化记录
-            $this->addChatRecord($this->_sendUserId, ['toId' => $this->_receiveUserId, 'tableName' => $tableName]);
-            $this->addChatRecord($this->_receiveUserId, ['toId' => $this->_sendUserId, 'tableName' => $tableName]);
+            $this->addChatRecord($this->sendUserId, ['toId' => $this->receiveUserId, 'tableName' => $tableName]);
+            $this->addChatRecord($this->receiveUserId, ['toId' => $this->sendUserId, 'tableName' => $tableName]);
 
             return json(['message' => array()])->code('200');
         }
@@ -70,7 +70,7 @@ class UserMessage extends Base
         //如果消息不为空修改修改未读消息为已读
         if (!empty($messageData)) {
             //修改未读消息，为已读。
-            $this->updateReadStatus($this->_receiveUserId, $table);
+            $this->updateReadStatus($this->receiveUserId, $table);
         }
 
         return json(['message' => $messageData])->code('200');
@@ -82,10 +82,10 @@ class UserMessage extends Base
         //获取表名
         $table = $this->getChatTable();
 
-        $message = $this->chatMessageModel($table)->getReplyMessage($this->_receiveUserId);
+        $message = $this->chatMessageModel($table)->getReplyMessage($this->receiveUserId);
         if (!empty($message)) {
             //修改未读消息，为已读。
-            $this->updateReadStatus($this->_receiveUserId, $table);
+            $this->updateReadStatus($this->receiveUserId, $table);
         }
 
         return json(['message' => $message])->code('200');
@@ -94,14 +94,16 @@ class UserMessage extends Base
     //查询列表信息
     public function getMessageList()
     {
-        $messageList = $this->chatModel($this->_sendUserId)->getMessageList();
+
+        $messageList = $this->chatModel($this->sendUserId)->getMessageList();
 
         return json(['messageList' => $messageList])->code('200');
     }
 
     //添加聊天信息
     public function addChatMessage()
-    {   $bln = false;
+    {
+        $bln = false;
 
         $content = $this->request->param('content');
         if (empty($content)) {
@@ -109,8 +111,8 @@ class UserMessage extends Base
         }
 
         $messageData = [
-                'sendUserId'    => $this->_sendUserId,
-                'receiveUserId' => $this->_receiveUserId,
+                'sendUserId'    => $this->sendUserId,
+                'receiveUserId' => $this->receiveUserId,
                 'posttime'      => time(),
                 'isread'        => '1',  //消息读取状态，1是未读，2是已读
                 'content'       => htmlspecialchars(addslashes($content)),

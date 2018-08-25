@@ -14,15 +14,15 @@ Route::get('/', function () {
 });
 
 //信息列表
-Route::post('getMessageList', 'userMessage/getMessageList');
+Route::post('getMessageList', 'userMessage/getMessageList')->middleware('DatabaseAndTable');
 
 //初始化进入聊天页面
-Route::post('getBasicsMessage', 'userMessage/getBasicsMessage');
+Route::post('getBasicsMessage', 'userMessage/getBasicsMessage')->middleware('MustUserId');
 
 //发送聊天信息
-Route::post('addChatMessage', 'userMessage/addChatMessage');
+Route::post('addChatMessage', 'userMessage/addChatMessage')->middleware('MustUserId');
 
 //查询回复消息
-Route::post('getReplyMessage', 'userMessage/getReplyMessage');
+Route::post('getReplyMessage', 'userMessage/getReplyMessage')->middleware('MustUserId');
 
 

@@ -65,9 +65,10 @@ class UserChat extends MongoBase
         $list = $this->order('id asc')->select();
 
         $messageList = array();
+        $message     = array();
+
         if (!empty($list)){
-            $message =  array_map(function($value){
-                $message = array();
+            $message =  array_map(function($value) use ($message) {
                 $userChatMessage = new UserChatMessage($value['tableName'], $this->connection['database']);
 
                 $message['userId']      = $value['toId'];
